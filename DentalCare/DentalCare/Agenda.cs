@@ -41,5 +41,10 @@ namespace DentalCare
                                                  Convert.ToInt32(t[1]),
                                                  Convert.ToInt32(t[2])));
         }
+
+        public List<FullAppointment> GetCitasPorPaciente()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
