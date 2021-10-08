@@ -25,6 +25,7 @@ namespace DentalCare
             //    en clase deseada (Day, Time, etc.)
             days = EasyFile<Day>.LoadDataFromFile("days.txt",
                             t => new Day(Convert.ToInt32(t[0]), t[1]));
+            days.Sort((x, y) => x.Id.CompareTo(y.Id));
 
             times = EasyFile<Time>.LoadDataFromFile("time.txt",
                             t => new Time(Convert.ToInt32(t[0]), t[1]));
@@ -44,7 +45,33 @@ namespace DentalCare
 
         public List<FullAppointment> GetCitasPorPaciente()
         {
-            throw new NotImplementedException();
+            var fullAppointments = new List<FullAppointment>();
+            appointments.ForEach(a =>
+                fullAppointments.Add(new FullAppointment(
+                    patients.Find(p => p.Id == a.PatientId),
+                    days.Find(d => d.Id == a.DayId),
+                    times.Find(t => t.Id == a.TimeId))));
+
+            fullAppointments.Sort((x, y) => x.Patient.FullName.CompareTo(y.Patient.FullName));
+
+            return fullAppointments;
+        }
+
+        public List<Day> GetDays() => new List<Day>(days);
+
+        public List<FullAppointment> GetCitasPorDia(int dayId)
+        {
+            var fullAppointments = new List<FullAppointment>();
+            appointments.FindAll(a => a.DayId == dayId)
+                .ForEach(a =>
+                    fullAppointments.Add(new FullAppointment(
+                        patients.Find(p => p.Id == a.PatientId),
+                        days.Find(d => d.Id == a.DayId),
+                        times.Find(t => t.Id == a.TimeId))));
+
+            fullAppointments.Sort((x, y) => x.Time.Id.CompareTo(y.Time.Id));
+
+            return fullAppointments;
         }
     }
 }

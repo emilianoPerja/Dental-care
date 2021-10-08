@@ -98,8 +98,7 @@ namespace DentalCare
                         break;
 
                     case 2:
-                        WriteLine("\n¡Opción NO implementada!");
-                        ReadKey();
+                        OpcionCitasPorDia();
                         break;
 
                     case 0:
@@ -123,7 +122,7 @@ namespace DentalCare
             WriteLine("");
 
             var appointments = agenda.GetCitasPorPaciente();
-            appointments.ForEach(a => WriteLine($"{a.Patient.FullName}. {a.Day.Name} - {a.Time.Description}"));
+            appointments.ForEach(a => WriteLine($"{a.Patient.FullName,20}. {a.Day.Name,-9} - {a.Time.Description,10}"));
             ReadKey();
 
             //foreach (var ap in appointments)
@@ -135,6 +134,32 @@ namespace DentalCare
             //{
             //    WriteLine($"{appointments[i].Patient.FullName}. {appointments[i].Day.Name} - {appointments[i].Time.Description}");
             //}
+        }
+
+        private static void OpcionCitasPorDia()
+        {
+            Clear();
+            WriteLine("*****************************************");
+            WriteLine("*            -Citas por dia-            *");
+            WriteLine("*****************************************");
+            WriteLine("");
+
+            var days = agenda.GetDays();
+            days.ForEach(d =>
+            {
+                WriteLine(d.Name);
+
+                var appointments = agenda.GetCitasPorDia(d.Id);
+                if (appointments.Count > 0)
+                {
+                    appointments.ForEach(a => WriteLine($"    {a.Time.Description} - {a.Patient.FullName}."));
+                }
+                else
+                {
+                    WriteLine("    -- No hay citas pendientes --");
+                }
+            });
+            ReadKey();
         }
 
         private static void SubmenuCitas()
