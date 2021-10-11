@@ -29,6 +29,7 @@ namespace DentalCare
 
             times = EasyFile<Time>.LoadDataFromFile("time.txt",
                             t => new Time(Convert.ToInt32(t[0]), t[1]));
+            times.Sort((x, y) => x.Id.CompareTo(y.Id));
 
             schedules = EasyFile<Schedule>.LoadDataFromFile("schedule.txt",
                             t => new Schedule(Convert.ToInt32(t[0]),
@@ -72,6 +73,35 @@ namespace DentalCare
             fullAppointments.Sort((x, y) => x.Time.Id.CompareTo(y.Time.Id));
 
             return fullAppointments;
+        }
+
+        public bool ValidateClavePaciente(int clave) =>
+            patients.Exists(p => p.Id == clave);
+
+        public bool HasCitaPendiente(int clave) =>
+            appointments.Exists(a => a.PatientId == clave);
+
+        public List<Day> GetAvailableDays()
+        {
+            var availableSchedule = schedules.FindAll(s => !appointments.Exists(a => (a.DayId, a.TimeId) == (s.DayId, s.TimeId)));
+            return days.FindAll(d => availableSchedule.Exists(s => d.Id == s.DayId));
+        }
+
+        public List<Time> GetAvailableTimes(Day day)
+        {
+            var availableSchedule = schedules.FindAll(s => !appointments.Exists(a => (a.DayId, a.TimeId) == (s.DayId, s.TimeId)));
+            var availableScheduleByDay = availableSchedule.FindAll(s => s.DayId == day.Id);
+            return times.FindAll(t => availableScheduleByDay.Exists(s => s.TimeId == t.Id));
+        }
+
+        public void AssignCita(int patientId, Day day, Time time)
+        {
+            appointments.Add(new Appointment(patientId, day.Id, time.Id));
+
+            EasyFile<Appointment>
+                .SaveDataToFile("appointments.txt",
+                                new string[] { "PatientId", "DayId", "TimeId" },
+                                appointments);
         }
     }
 }

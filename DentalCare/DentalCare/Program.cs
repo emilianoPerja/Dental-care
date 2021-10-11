@@ -183,9 +183,11 @@ namespace DentalCare
                 switch (option)
                 {
                     case 1:
+                        OpcionAgendar();
+                        break;
+
                     case 2:
-                        WriteLine("\n¡Opción NO implementada!");
-                        ReadKey();
+                        OpcionCancelar();
                         break;
 
                     case 0:
@@ -198,6 +200,95 @@ namespace DentalCare
                 }
             }
             while (option != 0);
+        }
+
+        private static void OpcionAgendar()
+        {
+            Clear();
+            WriteLine("*****************************************");
+            WriteLine("*               -Agendar-               *");
+            WriteLine("*****************************************");
+            WriteLine("");
+
+            Write("Clave de paciente: ");
+            int clave = Convert.ToInt32(ReadLine());
+
+            if (agenda.ValidateClavePaciente(clave)) // 422086
+            {
+                if (agenda.HasCitaPendiente(clave))
+                {
+                    WriteLine("\n¡El paciente ya tiene una cita asignada!");
+                }
+                else
+                {
+                    List<Day> days = agenda.GetAvailableDays();
+                    if (days.Count > 0)
+                    {
+                        WriteLine("\n***** Dias disponibles *****");
+                        for (int i = 0; i < days.Count; ++i)
+                        {
+                            WriteLine($"{i} - {days[i].Name}");
+                        }
+
+                        Write("\nElige un día: ");
+                        int dayIndex = Convert.ToInt32(ReadLine());
+                        if (dayIndex >= 0 && dayIndex < days.Count)
+                        {
+                            List<Time> times = agenda.GetAvailableTimes(days[dayIndex]);
+                            
+                            WriteLine("\n***** Horas disponibles *****");
+                            for (int i = 0; i < times.Count; ++i)
+                            {
+                                WriteLine($"{i} - {times[i].Description}");
+                            }
+                            WriteLine($"{times.Count} - No asignar horario");
+
+                            Write("\nElige una hora: ");
+                            int timeIndex = Convert.ToInt32(ReadLine());
+                            if (timeIndex >= 0 && timeIndex < times.Count)
+                            {
+                                agenda.AssignCita(clave, days[dayIndex], times[timeIndex]);
+                                
+                                WriteLine("¡CITA ASIGNADA!");
+                            }
+                            else if (timeIndex == times.Count)
+                            {
+                                WriteLine("\n¡No se asignó cita!");
+                            }
+                            else
+                            {
+                                WriteLine("\n¡La hora seleccionada no es válida, no se asignó cita!");
+                            }
+                        }
+                        else
+                        {
+                            WriteLine("\n¡El día seleccionado no es válido, no se asignó cita!");
+                        }
+                    }
+                    else
+                    {
+                        WriteLine("\n¡No hay días disponibles para asignación de citas!");
+                    }
+                }
+            }
+            else
+            {
+                WriteLine("\n¡La clave del paciente no es válida!");
+            }
+
+            ReadKey();
+        }
+
+        private static void OpcionCancelar()
+        {
+            Clear();
+            WriteLine("*****************************************");
+            WriteLine("*              -Cancelar-               *");
+            WriteLine("*****************************************");
+            WriteLine("");
+
+
+            ReadKey();
         }
     }
 }
