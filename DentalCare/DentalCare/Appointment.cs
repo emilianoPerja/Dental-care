@@ -8,9 +8,9 @@ namespace DentalCare
 {
     class Appointment
     {
-        public int PatientId { get; }
-        public int DayId { get; }
-        public int TimeId { get; }
+        public int PatientId { get; } // read-only
+        public int DayId { get; set; } // read-write
+        public int TimeId { get; set; } // read-write
 
         public Appointment(int patientId, int dayId, int timeId)
         {

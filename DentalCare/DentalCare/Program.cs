@@ -287,6 +287,34 @@ namespace DentalCare
             WriteLine("*****************************************");
             WriteLine("");
 
+            Write("Clave de paciente: ");
+            int clave = Convert.ToInt32(ReadLine());
+
+            if (agenda.ValidateClavePaciente(clave))
+            {
+                if (agenda.HasCitaPendiente(clave)) // 689155, 773141
+                {
+                    Write("¿Confirmar la cancelación? [s/n]: ");
+                    bool confirmar = ReadLine().Trim().ToUpper()[0] == 'S';
+                    if (confirmar)
+                    {
+                        agenda.CancelCita(clave);
+                        WriteLine("\n¡CITA CANCELADA!");
+                    }
+                    else
+                    {
+                        WriteLine("\n¡Operación cancelada!");
+                    }
+                }
+                else
+                {
+                    WriteLine("\n¡El paciente no tiene una cita asignada!");
+                }
+            }
+            else
+            {
+                WriteLine("\n¡La clave del paciente no es válida!");
+            }
 
             ReadKey();
         }

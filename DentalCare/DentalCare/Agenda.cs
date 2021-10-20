@@ -103,5 +103,28 @@ namespace DentalCare
                                 new string[] { "PatientId", "DayId", "TimeId" },
                                 appointments);
         }
+
+        public void CancelCita(int patientId)
+        {
+            appointments.RemoveAll(a => a.PatientId == patientId);
+
+            //string[] propiedades = { "PatientId", "DayId", "TimeId" };
+            EasyFile<Appointment>
+                .SaveDataToFile("appointments.txt",
+                                new string[] { "PatientId", "DayId", "TimeId" },
+                                appointments);
+        }
+
+        public void ReassignCita(int patientId, Day day, Time time)
+        {
+            Appointment appoinment = appointments.Find(a => a.PatientId == patientId);
+            appoinment.DayId = day.Id;
+            appoinment.TimeId = time.Id;
+
+            EasyFile<Appointment>
+                .SaveDataToFile("appointments.txt",
+                                new string[] { "PatientId", "DayId", "TimeId" },
+                                appointments);
+        }
     }
 }
