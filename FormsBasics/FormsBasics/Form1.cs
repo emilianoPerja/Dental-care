@@ -15,6 +15,8 @@ namespace FormsBasics
         public Form1()
         {
             InitializeComponent();
+
+            // Esto es una prueba
         }
     }
 }
