@@ -12,11 +12,22 @@ namespace FormsBasics
 {
     public partial class Form1 : Form
     {
+        private int cont;
+
         public Form1()
         {
             InitializeComponent();
 
-            // Esto es una prueba
+            cont = 0;
+            txtTest.Text = "Clicks: 0";
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            cont++;
+            txtTest.Text = $"Clicks: {cont}";
+
+            //txtTest.Text = "¡Hola Windows Forms!";
         }
     }
 }
